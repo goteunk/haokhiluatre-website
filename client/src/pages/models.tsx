@@ -3,6 +3,7 @@ import { Link } from 'wouter';
 import { Box, Eye } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import ContentActionsMenu from '@/components/content-actions-menu';
 
 interface ModelFile {
   name: string;
@@ -69,47 +70,52 @@ export default function Models() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {models.map((model, index) => (
-              <Link key={model.name} href={`/models/${encodeURIComponent(model.name)}`}>
-                <Card className="overflow-hidden hover:border-primary/50 transition-all cursor-pointer group">
-                  <div className="aspect-square bg-muted flex items-center justify-center relative overflow-hidden">
-                    {/* Placeholder for 3D model preview */}
+              <Card key={model.name} className="overflow-hidden hover:border-primary/50 transition-all group relative">
+                <div className="aspect-square bg-muted flex items-center justify-center relative overflow-hidden">
+                  <Link href={`/models/${encodeURIComponent(model.name)}`} className="absolute inset-0 z-10">
                     <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                       <Box className="w-16 h-16 text-primary" />
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="flex items-center gap-2 text-white">
-                        <Box className="w-4 h-4" />
-                        <span className="text-sm">
-                          {model.name.toLowerCase().endsWith('.glb') ? 'GLB Model' : 'GLTF Model'}
-                        </span>
-                      </div>
+                  </Link>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 right-4 z-20">
+                    <div className="flex items-center gap-2 text-white">
+                      <Box className="w-4 h-4" />
+                      <span className="text-sm">
+                        {model.name.toLowerCase().endsWith('.glb') ? 'GLB Model' : 'GLTF Model'}
+                      </span>
                     </div>
                   </div>
-                  <CardContent className="p-6">
-                    <h3 className="font-semibold text-lg mb-2" data-testid={`model-title-${index}`}>
-                      {model.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, "")}
-                    </h3>
-                    <p className="text-muted-foreground text-sm mb-3">
-                      Mô hình 3D cho game Hào Khí Lửa Tre
-                    </p>
-                    <div className="flex flex-wrap gap-2">
+                  <ContentActionsMenu
+                    fileName={model.name}
+                    bucket="models"
+                    currentTitle={model.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, "")}
+                    currentDescription="Mô hình 3D chất lượng cao cho game Hào Khí Lửa Tre"
+                  />
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="font-semibold text-lg mb-2" data-testid={`model-title-${index}`}>
+                    {model.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, "")}
+                  </h3>
+                  <p className="text-muted-foreground text-sm mb-3">
+                    Mô hình 3D cho game Hào Khí Lửa Tre
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="bg-muted text-muted-foreground px-2 py-1 rounded text-xs">
+                      {model.name.toLowerCase().endsWith('.glb') ? 'GLB' : 'GLTF'}
+                    </span>
+                    {model.metadata?.size && (
                       <span className="bg-muted text-muted-foreground px-2 py-1 rounded text-xs">
-                        {model.name.toLowerCase().endsWith('.glb') ? 'GLB' : 'GLTF'}
+                        {(model.metadata.size / (1024 * 1024)).toFixed(1)}MB
                       </span>
-                      {model.metadata?.size && (
-                        <span className="bg-muted text-muted-foreground px-2 py-1 rounded text-xs">
-                          {(model.metadata.size / (1024 * 1024)).toFixed(1)}MB
-                        </span>
-                      )}
-                      <span className="bg-muted text-muted-foreground px-2 py-1 rounded text-xs flex items-center gap-1">
-                        <Eye className="w-3 h-3" />
-                        Xem chi tiết
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+                    )}
+                    <span className="bg-muted text-muted-foreground px-2 py-1 rounded text-xs flex items-center gap-1">
+                      <Eye className="w-3 h-3" />
+                      Xem chi tiết
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}

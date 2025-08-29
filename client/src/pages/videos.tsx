@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Play, Volume2, VolumeX, Clock, Eye } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import ContentActionsMenu from '@/components/content-actions-menu';
 import { Link } from 'wouter';
 
 interface VideoFile {
@@ -103,6 +104,12 @@ export default function Videos() {
                       <source src={video.url} type="video/webm" />
                       Trình duyệt của bạn không hỗ trợ thẻ video.
                     </video>
+                    <ContentActionsMenu
+                      fileName={video.name}
+                      bucket="videos"
+                      currentTitle={videoName}
+                      currentDescription="Video từ dự án game Hào Khí Lửa Tre - Thể hiện tinh thần võ thuật cổ đại Việt Nam"
+                    />
                     <div className="absolute bottom-4 right-4">
                       <button
                         className="bg-black/50 text-white p-2 rounded hover:bg-black/70 transition-colors"

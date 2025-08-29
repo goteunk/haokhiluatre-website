@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'lucide-react';
 import ImageLightbox from '@/components/image-lightbox';
+import ContentActionsMenu from '@/components/content-actions-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'wouter';
 
@@ -93,13 +94,19 @@ export default function Gallery() {
         ) : (
           <div className="masonry">
             {images.map((image, index) => (
-              <div key={image.name} className="masonry-item">
+              <div key={image.name} className="masonry-item relative">
                 <img
                   src={image.url}
                   alt={image.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, "")}
                   className="w-full rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
                   onClick={() => openLightbox(index)}
                   data-testid={`gallery-image-${index}`}
+                />
+                <ContentActionsMenu
+                  fileName={image.name}
+                  bucket="images"
+                  currentTitle={image.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, "")}
+                  currentDescription="Concept art và screenshot từ quá trình phát triển Hào Khí Lửa Tre"
                 />
               </div>
             ))}

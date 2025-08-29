@@ -179,6 +179,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update file metadata endpoint
+  app.patch('/api/content/:bucket/:filename', async (req, res) => {
+    if (!supabase) {
+      return res.status(503).json({ 
+        message: 'Supabase chưa được cấu hình. Vui lòng kiểm tra biến môi trường.' 
+      });
+    }
+
+    try {
+      const { bucket, filename } = req.params;
+      const { title, description, password } = req.body;
+
+      // Validate password
+      if (password !== process.env.UPLOAD_PASSWORD) {
+        return res.status(401).json({ message: 'Sai mật khẩu.' });
+      }
+
+      // Update file metadata
+      const { data, error } = await supabase.storage
+        .from(bucket)
+        .update(filename, new Blob(), {
+          metadata: {
+            title: title || filename,
+            description: description || '',
+          },
+        });
+
+      if (error) {
+        return res.status(500).json({ message: `Lỗi cập nhật: ${error.message}` });
+      }
+
+      res.json({
+        ok: true,
+        message: 'Cập nhật thành công!',
+      });
+
+    } catch (error) {
+      console.error('Update error:', error);
+      res.status(500).json({ message: 'Lỗi server khi cập nhật file.' });
+    }
+  });
+
+  // Delete file endpoint
+  app.delete('/api/content/:bucket/:filename', async (req, res) => {
+    if (!supabase) {
+      return res.status(503).json({ 
+        message: 'Supabase chưa được cấu hình. Vui lòng kiểm tra biến môi trường.' 
+      });
+    }
+
+    try {
+      const { bucket, filename } = req.params;
+      const { password } = req.body;
+
+      // Validate password
+      if (password !== process.env.UPLOAD_PASSWORD) {
+        return res.status(401).json({ message: 'Sai mật khẩu.' });
+      }
+
+      // Delete file from storage
+      const { error } = await supabase.storage
+        .from(bucket)
+        .remove([filename]);
+
+      if (error) {
+        return res.status(500).json({ message: `Lỗi xóa file: ${error.message}` });
+      }
+
+      res.json({
+        ok: true,
+        message: 'Xóa file thành công!',
+      });
+
+    } catch (error) {
+      console.error('Delete error:', error);
+      res.status(500).json({ message: 'Lỗi server khi xóa file.' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
