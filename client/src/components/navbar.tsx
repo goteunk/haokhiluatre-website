@@ -27,7 +27,7 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <h1 className="font-display text-xl font-bold text-primary">Hào Khí Lửa Tre</h1>
-              <span className="ml-2 text-sm text-muted-foreground">— The Weakened</span>
+              <span className="ml-2 text-sm text-muted-foreground">— The Weakened Team</span>
             </Link>
           </div>
           

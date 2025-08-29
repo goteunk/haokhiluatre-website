@@ -1,5 +1,6 @@
 import { Link } from 'wouter';
 import { Play, Box, ChevronDown } from 'lucide-react';
+import backgroundVideo from '../assets/background-video.mp4';
 
 export default function Home() {
   const scrollToSection = (sectionId: string) => {
@@ -24,15 +25,15 @@ export default function Home() {
           className="absolute inset-0 w-full h-full object-cover opacity-30"
           data-testid="hero-video"
         >
-          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+          <source src={backgroundVideo} type="video/mp4" />
         </video>
         
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold mb-6 golden-text">
             Hào Khí Lửa Tre
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
-            Cinematic UE5 — dự án indie bởi The Weakened
+            Cinematic UE5 — dự án indie bởi The Weakened Team
           </p>
           <p className="text-lg text-foreground/80 mb-12 max-w-2xl mx-auto">
             Khám phá thế giới võ thuật cổ đại với công nghệ đồ họa hiện đại. 

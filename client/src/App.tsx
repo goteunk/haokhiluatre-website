@@ -12,6 +12,7 @@ import Gallery from "@/pages/gallery";
 import Videos from "@/pages/videos";
 import About from "@/pages/about";
 import Upload from "@/pages/upload";
+import teamLogo from "./assets/team-logo.png";
 
 function Router() {
   return (
@@ -33,7 +34,10 @@ function Router() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="font-display text-xl font-bold mb-4 text-primary">Hào Khí Lửa Tre</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <img src={teamLogo} alt="The Weakened Team Logo" className="w-8 h-8" />
+                <h3 className="font-display text-xl font-bold text-primary">Hào Khí Lửa Tre</h3>
+              </div>
               <p className="text-muted-foreground mb-4">
                 Dự án game indie cinematic với công nghệ UE5, 
                 mang đậm văn hóa và tinh thần Việt Nam.
@@ -68,7 +72,7 @@ function Router() {
             <div>
               <h4 className="font-semibold mb-4">Hỗ Trợ</h4>
               <ul className="space-y-2">
-                <li><span className="text-muted-foreground">Email: support@theweakened.studio</span></li>
+                <li><span className="text-muted-foreground">Email: theweakened.team@gmail.com</span></li>
                 <li><span className="text-muted-foreground">Powered by UE5</span></li>
                 <li><span className="text-muted-foreground">Made in Vietnam 🇻🇳</span></li>
               </ul>
@@ -77,7 +81,7 @@ function Router() {
           
           <div className="border-t border-border mt-8 pt-8 text-center">
             <p className="text-muted-foreground">
-              © 2024 The Weakened Studio. Tất cả quyền được bảo lưu.
+© 2025 The Weakened Team
             </p>
           </div>
         </div>

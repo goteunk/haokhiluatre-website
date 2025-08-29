@@ -6,7 +6,7 @@ export default function About() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Giới Thiệu</h2>
-          <p className="text-xl text-muted-foreground">Về dự án và team The Weakened</p>
+          <p className="text-xl text-muted-foreground">Về dự án và team The Weakened Team</p>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
@@ -41,7 +41,7 @@ export default function About() {
             />
           </div>
           <div className="order-1 lg:order-2">
-            <h3 className="font-display text-2xl font-semibold mb-6">Team The Weakened</h3>
+            <h3 className="font-display text-2xl font-semibold mb-6">Team The Weakened Team</h3>
             <p className="text-muted-foreground mb-6 leading-relaxed">
               Chúng tôi là một nhóm nhỏ các nhà phát triển game độc lập tại Việt Nam, đam mê tạo ra 
               những trải nghiệm game độc đáo mang đậm dấu ấn văn hóa bản địa. Với kinh nghiệm trong 
@@ -56,7 +56,7 @@ export default function About() {
               <h4 className="font-semibold text-lg">Liên Hệ</h4>
               <div className="flex items-center gap-3 text-muted-foreground">
                 <Mail className="w-5 h-5" />
-                <span>contact@theweakened.studio</span>
+                <span>theweakened.team@gmail.com</span>
               </div>
               <div className="flex items-center gap-3 text-muted-foreground">
                 <MessageCircle className="w-5 h-5" />

@@ -196,10 +196,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: 'Sai mật khẩu.' });
       }
 
-      // Update file metadata
+      // Get the existing file first
+      const { data: fileData, error: downloadError } = await supabase.storage
+        .from(bucket)
+        .download(filename);
+
+      if (downloadError) {
+        return res.status(500).json({ message: `Lỗi tải file: ${downloadError.message}` });
+      }
+
+      // Re-upload with updated metadata
       const { data, error } = await supabase.storage
         .from(bucket)
-        .update(filename, new Blob(), {
+        .upload(filename, fileData, {
+          upsert: true,
           metadata: {
             title: title || filename,
             description: description || '',

@@ -85,6 +85,28 @@
   background: linear-gradient(135deg, rgba(30, 64, 175, 0.3) 0%, rgba(245, 158, 11, 0.2) 100%);
 }
 
+/* Golden text style matching the reference image */
+.golden-text {
+  background: linear-gradient(45deg, #FFD700, #FFA500, #FFFF99, #DAA520, #B8860B);
+  background-size: 200% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3);
+  animation: golden-glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes golden-glow {
+  0% {
+    background-position: 0% 50%;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.4), 0 0 40px rgba(255, 215, 0, 0.2);
+  }
+  100% {
+    background-position: 100% 50%;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.4);
+  }
+}
+
 .masonry {
   column-count: 3;
   column-gap: 1rem;
