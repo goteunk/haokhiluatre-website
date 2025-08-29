@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Expand, RotateCcw, Home } from 'lucide-react';
+import { Expand, RotateCcw, Home, Box } from 'lucide-react';
 
 // Declare global JSX element for model-viewer
 declare global {
@@ -63,21 +63,36 @@ export default function ModelViewer({ src, alt, className = '' }: ModelViewerPro
         src={src}
         alt={alt}
         camera-controls
+        touch-action="pan-y"
+        disable-pan
         auto-rotate
         auto-rotate-delay="3000"
-        rotation-per-second="30deg"
-        environment-image="https://modelviewer.dev/shared-assets/environments/music_hall_01_1k.hdr"
-        exposure="1"
-        shadow-intensity="1"
-        className="w-full h-full bg-muted rounded-lg"
+        rotation-per-second="20deg"
+        field-of-view="30deg"
+        min-camera-orbit="auto auto 1m"
+        max-camera-orbit="auto auto 10m"
+        camera-orbit="45deg 75deg 4m"
+        environment-image="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.hdr"
+        skybox-image="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.hdr"
+        exposure="1.2"
+        shadow-intensity="0.7"
+        shadow-softness="0.8"
+        tone-mapping="aces"
+        className="w-full h-full bg-gradient-to-b from-sky-100 to-slate-100 dark:from-slate-900 dark:to-slate-800 rounded-lg"
         data-testid="model-viewer"
       >
-        <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-lg">
+        <div slot="progress-bar" className="absolute bottom-2 left-2 right-2">
+          <div className="h-1 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div className="h-full bg-primary rounded-full transition-all duration-300"></div>
+          </div>
+        </div>
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 rounded-lg" slot="poster">
           <div className="text-center">
             <div className="w-16 h-16 mx-auto mb-4 bg-primary/20 rounded-full flex items-center justify-center">
-              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              <Box className="w-8 h-8 text-primary" />
             </div>
-            <p className="text-muted-foreground">Đang tải mô hình 3D...</p>
+            <p className="text-muted-foreground">Nhấn để tải mô hình 3D</p>
+            <p className="text-xs text-muted-foreground/70 mt-2">Kéo để xoay • Lăn chuột để zoom</p>
           </div>
         </div>
       </model-viewer>
@@ -87,16 +102,16 @@ export default function ModelViewer({ src, alt, className = '' }: ModelViewerPro
         <div className="flex gap-2">
           <button
             onClick={toggleAutoRotate}
-            className="bg-black/50 text-white p-2 rounded hover:bg-black/70 transition-colors"
-            title="Xoay tự động"
+            className="bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-colors backdrop-blur-sm"
+            title="Bật/tắt xoay tự động"
             data-testid="button-auto-rotate"
           >
             <RotateCcw className="w-4 h-4" />
           </button>
           <button
             onClick={handleReset}
-            className="bg-black/50 text-white p-2 rounded hover:bg-black/70 transition-colors"
-            title="Reset camera"
+            className="bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-colors backdrop-blur-sm"
+            title="Đặt lại góc nhìn"
             data-testid="button-reset-camera"
           >
             <Home className="w-4 h-4" />
@@ -104,8 +119,8 @@ export default function ModelViewer({ src, alt, className = '' }: ModelViewerPro
         </div>
         <button
           onClick={handleFullscreen}
-          className="bg-black/50 text-white p-2 rounded hover:bg-black/70 transition-colors"
-          title="Toàn màn hình"
+          className="bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-colors backdrop-blur-sm"
+          title="Xem toàn màn hình"
           data-testid="button-fullscreen"
         >
           <Expand className="w-4 h-4" />
