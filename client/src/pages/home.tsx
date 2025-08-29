@@ -63,9 +63,13 @@ export default function Home() {
         </div>
         
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <ChevronDown className="w-8 h-8 text-muted-foreground" />
-        </div>
+        <button 
+          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hover:text-primary transition-colors cursor-pointer"
+          aria-label="Scroll down"
+        >
+          <ChevronDown className="w-8 h-8 text-muted-foreground hover:text-primary" />
+        </button>
       </section>
     </div>
   );

@@ -12,6 +12,8 @@ interface ImageFile {
   created_at: string;
   metadata?: {
     size: number;
+    title?: string;
+    description?: string;
   };
 }
 
@@ -46,9 +48,9 @@ export default function Gallery() {
 
   const lightboxImages = images?.map(img => ({
     src: img.url,
-    alt: img.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, ""),
-    title: img.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, ""),
-    description: 'Concept art và screenshot từ quá trình phát triển Hào Khí Lửa Tre'
+    alt: img.metadata?.title || img.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, ""),
+    title: img.metadata?.title || img.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, ""),
+    description: img.metadata?.description || 'Concept art và screenshot từ quá trình phát triển Hào Khí Lửa Tre'
   })) || [];
 
   if (error) {
@@ -97,7 +99,7 @@ export default function Gallery() {
               <div key={image.name} className="masonry-item relative">
                 <img
                   src={image.url}
-                  alt={image.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, "")}
+                  alt={image.metadata?.title || image.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, "")}
                   className="w-full rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
                   onClick={() => openLightbox(index)}
                   data-testid={`gallery-image-${index}`}
@@ -105,8 +107,8 @@ export default function Gallery() {
                 <ContentActionsMenu
                   fileName={image.name}
                   bucket="images"
-                  currentTitle={image.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, "")}
-                  currentDescription="Concept art và screenshot từ quá trình phát triển Hào Khí Lửa Tre"
+                  currentTitle={image.metadata?.title || image.name.replace(/\.[^/.]+$/, "").replace(/^\d+-/, "")}
+                  currentDescription={image.metadata?.description || "Concept art và screenshot từ quá trình phát triển Hào Khí Lửa Tre"}
                 />
               </div>
             ))}

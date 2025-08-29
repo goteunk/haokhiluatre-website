@@ -81,10 +81,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ message: error.message });
       }
 
-      // Get public URLs for each file
+      // Get public URLs and metadata for each file
       const filesWithUrls = files.map((file: any) => ({
         ...file,
         url: supabase.storage.from(bucket).getPublicUrl(file.name).data.publicUrl,
+        metadata: {
+          ...file.metadata,
+          title: file.metadata?.title,
+          description: file.metadata?.description
+        }
       }));
 
       res.json(filesWithUrls);
