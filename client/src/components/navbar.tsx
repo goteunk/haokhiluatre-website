@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Menu, X, Upload } from 'lucide-react';
+import gameIcon from '../assets/game-icon.png';
 
 export default function Navbar() {
   const [location] = useLocation();
@@ -26,8 +27,11 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <h1 className="font-display text-xl font-bold text-primary">Hào Khí Lửa Tre</h1>
-              <span className="ml-2 text-sm text-muted-foreground">— The Weakened Team</span>
+              <img src={gameIcon} alt="Game Icon" className="w-8 h-8 mr-3" />
+              <div>
+                <h1 className="font-display text-xl font-bold text-primary">Hào Khí Lửa Tre</h1>
+                <span className="ml-2 text-sm text-muted-foreground">— The Weakened Team</span>
+              </div>
             </Link>
           </div>
           

@@ -13,6 +13,7 @@ import Videos from "@/pages/videos";
 import About from "@/pages/about";
 import Upload from "@/pages/upload";
 import teamLogo from "./assets/team-logo.png";
+import gameIcon from "./assets/game-icon.png";
 
 function Router() {
   return (
