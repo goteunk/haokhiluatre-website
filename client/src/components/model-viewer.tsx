@@ -20,9 +20,9 @@ export default function ModelViewer({ src, alt, className = '' }: ModelViewerPro
   const viewerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    // Dynamically import model-viewer to avoid SSR issues
+    // Dynamically import model-viewer to avoid SSR issues and prevent duplicate registration
     const loadModelViewer = async () => {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined' && !customElements.get('model-viewer')) {
         await import('@google/model-viewer');
       }
     };
