@@ -1,6 +1,15 @@
 import { useEffect, useRef } from 'react';
 import { Expand, RotateCcw, Home } from 'lucide-react';
 
+// Declare global JSX element for model-viewer
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'model-viewer': any;
+    }
+  }
+}
+
 interface ModelViewerProps {
   src: string;
   alt: string;
