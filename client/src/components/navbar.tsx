@@ -29,7 +29,7 @@ export default function Navbar() {
             <Link href="/" className="flex items-center">
               <img src={gameIcon} alt="Game Icon" className="w-8 h-8 mr-3" />
               <div>
-                <h1 className="font-display text-xl font-bold text-primary">Hào Khí Lửa Tre</h1>
+                <h1 className="font-display text-xl font-bold golden-text">Hào Khí Lửa Tre</h1>
                 <span className="ml-2 text-sm text-muted-foreground">— The Weakened Team</span>
               </div>
             </Link>

@@ -43,7 +43,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/videos">
               <button 
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg transition-all transform hover:scale-105 flex items-center gap-3"
+                className="golden-text bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-400 hover:from-yellow-500 hover:via-yellow-400 hover:to-yellow-300 text-black px-8 py-4 rounded-lg font-semibold text-lg transition-all transform hover:scale-105 flex items-center gap-3 shadow-lg hover:shadow-yellow-400/25"
                 data-testid="button-watch-teaser"
               >
                 <Play className="w-5 h-5" />
@@ -62,14 +62,6 @@ export default function Home() {
           </div>
         </div>
         
-        {/* Scroll indicator */}
-        <button 
-          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hover:text-primary transition-colors cursor-pointer"
-          aria-label="Scroll down"
-        >
-          <ChevronDown className="w-8 h-8 text-muted-foreground hover:text-primary" />
-        </button>
       </section>
     </div>
   );
