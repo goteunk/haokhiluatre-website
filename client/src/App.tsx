@@ -3,8 +3,8 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import Navbar from "@/components/navbar";
+import { PresetProvider } from "./contexts/PresetContext";
+import PresetAwareNavbar from "@/components/presets/PresetAwareNavbar";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Models from "@/pages/models";
@@ -18,9 +18,10 @@ import gameIcon from "./assets/game-icon.png";
 
 function Router() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
-      <Switch>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+      <PresetAwareNavbar />
+      <main className="transition-all duration-300" style={{ marginLeft: 'var(--content-margin-left)' }}>
+        <Switch>
         <Route path="/" component={Home} />
         <Route path="/models" component={Models} />
         <Route path="/models/:modelName" component={ModelDetail} />
@@ -29,10 +30,10 @@ function Router() {
         <Route path="/about" component={About} />
         <Route path="/upload" component={Upload} />
         <Route component={NotFound} />
-      </Switch>
-      
-      {/* Footer */}
-      <footer className="border-t border-border bg-background">
+        </Switch>
+        
+        {/* Footer */}
+      <footer className="border-t" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
@@ -88,6 +89,7 @@ function Router() {
           </div>
         </div>
       </footer>
+      </main>
     </div>
   );
 }
@@ -95,12 +97,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
+      <PresetProvider>
         <TooltipProvider>
           <Toaster />
           <Router />
         </TooltipProvider>
-      </ThemeProvider>
+      </PresetProvider>
     </QueryClientProvider>
   );
 }
