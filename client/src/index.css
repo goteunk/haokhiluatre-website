@@ -1,46 +1,76 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Display:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: hsl(0, 0%, 4%);
-  --foreground: hsl(0, 0%, 98%);
-  --card: hsl(0, 0%, 6%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --popover: hsl(0, 0%, 6%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --primary: hsl(45, 93%, 58%);
-  --primary-foreground: hsl(0, 0%, 98%);
-  --secondary: hsl(217, 32%, 17%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --muted: hsl(217, 32%, 17%);
-  --muted-foreground: hsl(215, 20%, 65%);
-  --accent: hsl(38, 92%, 50%);
-  --accent-foreground: hsl(0, 0%, 9%);
+  /* Legacy Tailwind variables - keep for compatibility */
+  --background: var(--bg, hsl(0, 0%, 4%));
+  --foreground: var(--text, hsl(0, 0%, 98%));
+  --card: var(--surface, hsl(0, 0%, 6%));
+  --card-foreground: var(--text, hsl(0, 0%, 98%));
+  --popover: var(--surface, hsl(0, 0%, 6%));
+  --popover-foreground: var(--text, hsl(0, 0%, 98%));
+  --primary: var(--primary, hsl(45, 93%, 58%));
+  --primary-foreground: var(--primary-contrast, hsl(0, 0%, 98%));
+  --secondary: var(--secondary, hsl(217, 32%, 17%));
+  --secondary-foreground: var(--secondary-foreground, hsl(0, 0%, 98%));
+  --muted: var(--bg-muted, hsl(217, 32%, 17%));
+  --muted-foreground: var(--text-muted, hsl(215, 20%, 65%));
+  --accent: var(--accent, hsl(38, 92%, 50%));
+  --accent-foreground: var(--accent-contrast, hsl(0, 0%, 9%));
   --destructive: hsl(0, 62%, 30%);
   --destructive-foreground: hsl(0, 85%, 97%);
+  --border: var(--border, hsl(217, 32%, 17%));
+  --input: var(--bg-muted, hsl(217, 32%, 17%));
+  --ring: var(--ring, hsl(45, 93%, 58%));
+  --radius: var(--radius, 0.75rem);
+
+  /* Theme system variables - defaults to modern */
+  --bg: hsl(0, 0%, 4%);
+  --bg-muted: hsl(0, 0%, 6%);
+  --surface: hsl(0, 0%, 6%);
+  --text: hsl(0, 0%, 98%);
+  --text-muted: hsl(215, 20%, 65%);
+  --primary: hsl(45, 93%, 58%);
+  --primary-contrast: hsl(0, 0%, 98%);
+  --accent: hsl(38, 92%, 50%);
+  --accent-contrast: hsl(0, 0%, 9%);
+  --secondary: hsl(217, 32%, 17%);
   --border: hsl(217, 32%, 17%);
-  --input: hsl(217, 32%, 17%);
-  --ring: hsl(217, 91%, 60%);
+  --ring: hsl(45, 93%, 58%);
   --radius: 0.75rem;
-
-  --font-sans: 'Montserrat', sans-serif;
-  --font-serif: 'Montserrat', sans-serif;
-  --font-mono: 'Montserrat', monospace;
-  --font-display: 'Montserrat', sans-serif;
-
-  --shadow-2xs: 0px 2px 0px 0px hsl(217, 91%, 60% / 0.00);
-  --shadow-xs: 0px 2px 0px 0px hsl(217, 91%, 60% / 0.00);
-  --shadow-sm: 0px 2px 0px 0px hsl(217, 91%, 60% / 0.00), 0px 1px 2px -1px hsl(217, 91%, 60% / 0.00);
-  --shadow: 0px 2px 0px 0px hsl(217, 91%, 60% / 0.00), 0px 1px 2px -1px hsl(217, 91%, 60% / 0.00);
-  --shadow-md: 0px 2px 0px 0px hsl(217, 91%, 60% / 0.00), 0px 2px 4px -1px hsl(217, 91%, 60% / 0.00);
-  --shadow-lg: 0px 2px 0px 0px hsl(217, 91%, 60% / 0.00), 0px 4px 6px -1px hsl(217, 91%, 60% / 0.00);
-  --shadow-xl: 0px 2px 0px 0px hsl(217, 91%, 60% / 0.00), 0px 8px 10px -1px hsl(217, 91%, 60% / 0.00);
-  --shadow-2xl: 0px 2px 0px 0px hsl(217, 91%, 60% / 0.00);
-  --tracking-normal: 0em;
+  --radius-large: 1rem;
+  --radius-small: 0.5rem;
+  --shadow-elev-1: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-elev-2: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-elev-3: 0 8px 16px rgba(0, 0, 0, 0.2);
   --spacing: 0.25rem;
+  --backdrop-blur: blur(12px);
+  --background-texture: none;
+  --pattern-opacity: 0;
+
+  /* Typography */
+  --font-family: 'Montserrat', sans-serif;
+  --font-family-display: 'Montserrat', sans-serif;
+  --font-family-body: 'Montserrat', sans-serif;
+  --font-sans: var(--font-family);
+  --font-serif: var(--font-family-display);
+  --font-mono: 'Montserrat', monospace;
+  --font-display: var(--font-family-display);
+
+  --shadow-2xs: var(--shadow-elev-1);
+  --shadow-xs: var(--shadow-elev-1);
+  --shadow-sm: var(--shadow-elev-1);
+  --shadow: var(--shadow-elev-1);
+  --shadow-md: var(--shadow-elev-2);
+  --shadow-lg: var(--shadow-elev-2);
+  --shadow-xl: var(--shadow-elev-3);
+  --shadow-2xl: var(--shadow-elev-3);
+  --tracking-normal: 0em;
 }
 
 .dark {
@@ -62,7 +92,7 @@
   --destructive-foreground: hsl(0, 85%, 97%);
   --border: hsl(217, 32%, 17%);
   --input: hsl(217, 32%, 17%);
-  --ring: hsl(217, 91%, 60%);
+  --ring: hsl(45, 93%, 58%);
 }
 
 @layer base {
@@ -71,8 +101,25 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
-    font-family: 'Montserrat', sans-serif;
+    @apply font-sans antialiased;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-family);
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: var(--background-texture);
+    background-size: 100px 100px;
+    opacity: var(--pattern-opacity);
+    pointer-events: none;
+    z-index: -1;
   }
 
   .font-display {
@@ -80,9 +127,121 @@
   }
 }
 
+/* Theme-specific styles */
+[data-theme="modern"] {
+  --bg: hsl(0, 0%, 4%);
+  --bg-muted: hsl(0, 0%, 6%);
+  --surface: hsl(0, 0%, 6%);
+  --text: hsl(0, 0%, 98%);
+  --text-muted: hsl(215, 20%, 65%);
+  --primary: hsl(45, 93%, 58%);
+  --primary-contrast: hsl(0, 0%, 98%);
+  --accent: hsl(38, 92%, 50%);
+  --accent-contrast: hsl(0, 0%, 9%);
+  --secondary: hsl(217, 32%, 17%);
+  --border: hsl(217, 32%, 17%);
+  --ring: hsl(45, 93%, 58%);
+  --radius: 0.75rem;
+  --radius-large: 1rem;
+  --radius-small: 0.5rem;
+  --shadow-elev-1: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-elev-2: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-elev-3: 0 8px 16px rgba(0, 0, 0, 0.2);
+  --spacing: 0.25rem;
+  --backdrop-blur: blur(12px);
+  --background-texture: none;
+  --pattern-opacity: 0;
+  --font-family: 'Montserrat', sans-serif;
+  --font-family-display: 'Montserrat', sans-serif;
+  --font-family-body: 'Montserrat', sans-serif;
+}
+
+[data-theme="trad"] {
+  --bg: hsl(30, 15%, 5%);
+  --bg-muted: hsl(25, 35%, 8%);
+  --surface: hsl(25, 35%, 8%);
+  --text: hsl(40, 25%, 92%);
+  --text-muted: hsl(35, 20%, 75%);
+  --primary: hsl(0, 91%, 35%);
+  --primary-contrast: hsl(40, 25%, 92%);
+  --accent: hsl(45, 85%, 62%);
+  --accent-contrast: hsl(30, 15%, 5%);
+  --secondary: hsl(168, 45%, 35%);
+  --border: hsl(42, 25%, 42%);
+  --ring: hsl(45, 85%, 62%);
+  --radius: 1rem;
+  --radius-large: 1.5rem;
+  --radius-small: 0.75rem;
+  --shadow-elev-1: 0 2px 8px rgba(178, 10, 10, 0.1);
+  --shadow-elev-2: 0 4px 16px rgba(178, 10, 10, 0.15);
+  --shadow-elev-3: 0 8px 24px rgba(178, 10, 10, 0.2);
+  --spacing: 0.375rem;
+  --backdrop-blur: blur(8px);
+  --background-texture: url('/themes/trad/pattern.svg');
+  --pattern-opacity: 0.08;
+  --font-family: 'Be Vietnam Pro', 'Inter', sans-serif;
+  --font-family-display: 'Noto Serif Display', 'Noto Serif', serif;
+  --font-family-body: 'Be Vietnam Pro', 'Inter', sans-serif;
+}
+
+/* Vietnamese Traditional theme specific styles */
+[data-theme="trad"] h1,
+[data-theme="trad"] h2,
+[data-theme="trad"] h3,
+[data-theme="trad"] .font-display {
+  font-family: var(--font-family-display);
+  letter-spacing: 0.025em;
+}
+
+[data-theme="trad"] h1:first-letter {
+  font-size: 1.2em;
+  float: left;
+  line-height: 0.8;
+  margin-right: 0.1em;
+  margin-top: 0.05em;
+}
+
+[data-theme="trad"] .card,
+[data-theme="trad"] .surface {
+  background: var(--surface);
+  backdrop-filter: var(--backdrop-blur);
+  border: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+[data-theme="trad"] .card:hover {
+  border-image: linear-gradient(45deg, var(--accent), transparent, var(--accent)) 1;
+}
+
+[data-theme="trad"] button {
+  border-radius: var(--radius);
+  outline-offset: 3px;
+  transition: all 0.2s ease-out;
+}
+
+[data-theme="trad"] button:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+[data-theme="trad"] button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-elev-2);
+}
+
+[data-theme="trad"] .section-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--accent), transparent);
+  margin: 2rem 0;
+}
+
 /* Custom styles for the Vietnamese game website */
 .hero-gradient {
   background: linear-gradient(135deg, rgba(30, 64, 175, 0.3) 0%, rgba(245, 158, 11, 0.2) 100%);
+}
+
+[data-theme="trad"] .hero-gradient {
+  background: linear-gradient(135deg, rgba(178, 10, 10, 0.2) 0%, rgba(242, 200, 75, 0.1) 100%);
 }
 
 /* Golden text style matching the reference image */

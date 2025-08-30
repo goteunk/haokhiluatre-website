@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Menu, X, Upload } from 'lucide-react';
 import gameIcon from '../assets/game-icon.png';
+import PresetSwitcher from './preset-switcher';
 
 export default function Navbar() {
   const [location] = useLocation();
@@ -36,7 +37,7 @@ export default function Navbar() {
           </div>
           
           <div className="hidden md:block">
-            <div className="flex space-x-6">
+            <div className="flex space-x-6 items-center">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
@@ -59,6 +60,7 @@ export default function Navbar() {
                 <Upload className="w-4 h-4" />
                 Tải lên
               </Link>
+              <PresetSwitcher />
             </div>
           </div>
           
@@ -100,6 +102,9 @@ export default function Navbar() {
               <Upload className="w-4 h-4" />
               Tải lên
             </Link>
+            <div className="py-2">
+              <PresetSwitcher />
+            </div>
           </div>
         </div>
       )}
