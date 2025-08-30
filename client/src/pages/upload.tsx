@@ -1,12 +1,8 @@
-import { createClient } from '@supabase/supabase-js';
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || window?.env?.NEXT_PUBLIC_SUPABASE_URL || '',
-  import.meta.env.VITE_SUPABASE_ANON_KEY || window?.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-);
+// upload.tsx  — phiên bản dùng Signed URL (Vercel Serverless + Supabase Storage)
+// Thay toàn bộ nội dung file cũ bằng file này.
 
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Upload as UploadIcon, File, Image, Video, Box } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,16 +10,48 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '@/lib/queryClient';
+import { Image, Video, Box, File as FileIcon } from 'lucide-react';
+
+import { createClient } from '@supabase/supabase-js';
+
+// Client Supabase: đọc từ Vite env, fallback sang window.env nếu có
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL || (window as any)?.env?.NEXT_PUBLIC_SUPABASE_URL || '',
+  import.meta.env.VITE_SUPABASE_ANON_KEY || (window as any)?.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+);
 
 type ContentType = 'image' | 'video' | 'model';
 
 interface UploadResponse {
   ok: boolean;
-  kind: string;
+  kind: ContentType;
   url: string;
   path: string;
   message?: string;
+}
+
+// Hàm upload mới: xin signed URL từ /api/signed-upload, PUT trực tiếp lên Supabase
+async function uploadViaSignedURL(file: File, bucket: string, folder?: string, password?: string) {
+  // 1) xin signed URL
+  const r = await fetch('/api/signed-upload', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-upload-password': password ?? '' },
+    body: JSON.stringify({ bucket, filename: file.name, folder })
+  });
+  const j = await r.json();
+  if (!r.ok || !j.uploadUrl) throw new Error(j?.error || 'Không lấy được signed URL');
+
+  // 2) PUT file thẳng lên Supabase
+  const put = await fetch(j.uploadUrl, {
+    method: 'PUT',
+    body: file,
+    headers: { 'content-type': file.type || 'application/octet-stream' }
+  });
+  if (!put.ok) throw new Error('Upload thất bại');
+
+  // 3) Lấy public URL để hiển thị/lưu
+  const publicUrl = supabase.storage.from(bucket).getPublicUrl(j.path).data.publicUrl;
+  return { path: j.path, url: publicUrl };
 }
 
 export default function Upload() {
@@ -31,59 +59,52 @@ export default function Upload() {
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
-  
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const uploadMutation = useMutation({
+    // DÙNG HÀM MỚI: uploadViaSignedURL
     mutationFn: async (data: { file: File; contentType: ContentType; title: string; password: string }) => {
-      const formData = new FormData();
-      formData.append('file', data.file);
-      formData.append('kind', data.contentType);
-      formData.append('title', data.title);
-      formData.append('password', data.password);
+      const bucket =
+        data.contentType === 'image' ? 'images' :
+        data.contentType === 'video' ? 'videos' : 'models';
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      const folder = data.title?.trim() || undefined;
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Upload failed');
-      }
-
-      return response.json() as Promise<UploadResponse>;
+      const { url, path } = await uploadViaSignedURL(data.file, bucket, folder, data.password);
+      const res: UploadResponse = { ok: true, kind: data.contentType, url, path };
+      return res;
     },
     onSuccess: (data) => {
       toast({
-        title: "Upload thành công!",
+        title: 'Upload thành công!',
         description: `File đã được tải lên: ${file?.name}`,
       });
-      
-      // Invalidate and refetch content
+
+      // refresh list
       const bucketName = contentType === 'image' ? 'images' : contentType === 'video' ? 'videos' : 'models';
       queryClient.invalidateQueries({ queryKey: ['/api/content', bucketName] });
-      
-      // Reset form
+
+      // reset form
       setFile(null);
       setTitle('');
       setUploadProgress(0);
-      
-      // Show public URL
+
+      // show public URL
       setTimeout(() => {
         toast({
-          title: "URL công khai",
+          title: 'URL công khai',
           description: data.url,
           duration: 8000,
         });
-      }, 1500);
+      }, 800);
     },
     onError: (error: Error) => {
       toast({
-        title: "Lỗi upload",
+        title: 'Lỗi upload',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
       setUploadProgress(0);
     },
@@ -91,71 +112,72 @@ export default function Upload() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!file) {
       toast({
-        title: "Lỗi",
-        description: "Vui lòng chọn file để tải lên!",
-        variant: "destructive",
+        title: 'Lỗi',
+        description: 'Vui lòng chọn file để tải lên!',
+        variant: 'destructive',
       });
       return;
     }
 
-    // File size validation (200MB)
+    // Giới hạn 200MB
     if (file.size > 200 * 1024 * 1024) {
       toast({
-        title: "Lỗi",
-        description: "File quá lớn! Giới hạn 200MB.",
-        variant: "destructive",
+        title: 'Lỗi',
+        description: 'File quá lớn! Giới hạn 200MB.',
+        variant: 'destructive',
       });
       return;
     }
 
-    // File type validation
+    // Validate kiểu file
     const validTypes: Record<ContentType, string[]> = {
       image: ['image/png', 'image/jpeg', 'image/jpg'],
       video: ['video/mp4', 'video/webm'],
       model: ['model/gltf+json', 'model/gltf-binary', 'application/octet-stream'],
     };
 
-    const isValidType = contentType === 'model' 
-      ? validTypes[contentType].includes(file.type) || 
-        file.name.toLowerCase().endsWith('.glb') || 
-        file.name.toLowerCase().endsWith('.gltf')
-      : validTypes[contentType].includes(file.type);
+    const isValidType =
+      contentType === 'model'
+        ? validTypes[contentType].includes(file.type) ||
+          file.name.toLowerCase().endsWith('.glb') ||
+          file.name.toLowerCase().endsWith('.gltf')
+        : validTypes[contentType].includes(file.type);
 
     if (!isValidType) {
       toast({
-        title: "Lỗi",
-        description: "Loại file không hợp lệ!",
-        variant: "destructive",
+        title: 'Lỗi',
+        description: 'Loại file không hợp lệ!',
+        variant: 'destructive',
       });
       return;
     }
 
-    // Password prompt
+    // Hỏi mật khẩu upload
     const password = prompt('Nhập mật khẩu upload:');
     if (!password) {
       toast({
-        title: "Lỗi",
-        description: "Cần mật khẩu để tải lên!",
-        variant: "destructive",
+        title: 'Lỗi',
+        description: 'Cần mật khẩu để tải lên!',
+        variant: 'destructive',
       });
       return;
     }
 
-    // Simulate upload progress
+    // Simulate progress
     setUploadProgress(0);
     const progressInterval = setInterval(() => {
-      setUploadProgress(prev => {
-        const newProgress = prev + 10;
-        if (newProgress >= 90) {
+      setUploadProgress((prev) => {
+        const next = prev + 10;
+        if (next >= 90) {
           clearInterval(progressInterval);
           return 90;
         }
-        return newProgress;
+        return next;
       });
-    }, 200);
+    }, 180);
 
     try {
       await uploadMutation.mutateAsync({ file, contentType, title, password });
@@ -180,7 +202,7 @@ export default function Upload() {
       case 'image': return <Image className="w-5 h-5" />;
       case 'video': return <Video className="w-5 h-5" />;
       case 'model': return <Box className="w-5 h-5" />;
-      default: return <File className="w-5 h-5" />;
+      default: return <FileIcon className="w-5 h-5" />;
     }
   };
 
@@ -191,7 +213,7 @@ export default function Upload() {
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Tải Lên Nội Dung</h2>
           <p className="text-xl text-muted-foreground">Chia sẻ mô hình 3D, hình ảnh và video mới</p>
         </div>
-        
+
         <Card>
           <CardContent className="p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -199,33 +221,30 @@ export default function Upload() {
                 <Label htmlFor="content-type" className="text-sm font-medium mb-2 block">
                   Loại Nội Dung
                 </Label>
-                <Select value={contentType} onValueChange={(value: ContentType) => setContentType(value)}>
+                <Select value={contentType} onValueChange={(v: ContentType) => setContentType(v)}>
                   <SelectTrigger data-testid="select-content-type">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="image">
                       <div className="flex items-center gap-2">
-                        <Image className="w-4 h-4" />
-                        Hình Ảnh (PNG, JPG)
+                        <Image className="w-4 h-4" /> Hình Ảnh (PNG, JPG)
                       </div>
                     </SelectItem>
                     <SelectItem value="video">
                       <div className="flex items-center gap-2">
-                        <Video className="w-4 h-4" />
-                        Video (MP4, WebM)
+                        <Video className="w-4 h-4" /> Video (MP4, WebM)
                       </div>
                     </SelectItem>
                     <SelectItem value="model">
                       <div className="flex items-center gap-2">
-                        <Box className="w-4 h-4" />
-                        Mô Hình 3D (GLB, GLTF)
+                        <Box className="w-4 h-4" /> Mô Hình 3D (GLB, GLTF)
                       </div>
                     </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div>
                 <Label htmlFor="file-input" className="text-sm font-medium mb-2 block">
                   Chọn File
@@ -248,7 +267,7 @@ export default function Upload() {
                   )}
                 </div>
               </div>
-              
+
               <div>
                 <Label htmlFor="content-title" className="text-sm font-medium mb-2 block">
                   Tiêu Đề (Tùy chọn)
@@ -262,9 +281,9 @@ export default function Upload() {
                   data-testid="input-title"
                 />
               </div>
-              
-              <Button 
-                type="submit" 
+
+              <Button
+                type="submit"
                 className="w-full py-3 flex items-center justify-center gap-3"
                 disabled={uploadMutation.isPending}
                 data-testid="button-submit-upload"
@@ -272,7 +291,7 @@ export default function Upload() {
                 {getIcon(contentType)}
                 {uploadMutation.isPending ? 'Đang tải lên...' : 'Đăng Tải'}
               </Button>
-              
+
               {uploadProgress > 0 && uploadProgress < 100 && (
                 <div data-testid="upload-progress">
                   <Progress value={uploadProgress} className="mb-2" />
