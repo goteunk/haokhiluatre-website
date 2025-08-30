@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ComponentType } from 'react';
 
-export type PresetType = 'modern' | 'trad';
+export type PresetType = 'modern' | 'trad' | 'premium';
 
 interface PresetContextType {
   preset: PresetType;
@@ -23,13 +23,13 @@ export function PresetProvider({ children }: PresetProviderProps) {
     const urlParams = new URLSearchParams(window.location.search);
     const urlPreset = urlParams.get('preset');
     
-    if (urlPreset === 'modern' || urlPreset === 'trad') {
+    if (urlPreset === 'modern' || urlPreset === 'trad' || urlPreset === 'premium') {
       setPresetState(urlPreset);
       localStorage.setItem('preset', urlPreset);
     } else {
       // Check localStorage
       const savedPreset = localStorage.getItem('preset') as PresetType;
-      if (savedPreset === 'modern' || savedPreset === 'trad') {
+      if (savedPreset === 'modern' || savedPreset === 'trad' || savedPreset === 'premium') {
         setPresetState(savedPreset);
       }
     }
@@ -51,8 +51,10 @@ export function PresetProvider({ children }: PresetProviderProps) {
   };
 
   const togglePreset = () => {
-    const newPreset = preset === 'modern' ? 'trad' : 'modern';
-    setPreset(newPreset);
+    const presets: PresetType[] = ['modern', 'trad', 'premium'];
+    const currentIndex = presets.indexOf(preset);
+    const nextIndex = (currentIndex + 1) % presets.length;
+    setPreset(presets[nextIndex]);
   };
 
   return (
@@ -78,6 +80,7 @@ export interface PresetComponentProps {
 export type PresetComponents<T extends PresetComponentProps = PresetComponentProps> = {
   modern: ComponentType<T>;
   trad: ComponentType<T>;
+  premium: ComponentType<T>;
 };
 
 export interface PresetRegistry {

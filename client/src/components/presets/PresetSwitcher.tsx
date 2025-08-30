@@ -14,11 +14,13 @@ import { useToast } from '@/hooks/use-toast';
 const presetLabels: Record<PresetType, string> = {
   modern: 'Hiện đại',
   trad: 'Cổ truyền VN',
+  premium: 'Premium',
 };
 
 const presetMessages: Record<PresetType, string> = {
   modern: 'Đã quay về giao diện Hiện đại',
   trad: 'Đã áp dụng giao diện Cổ truyền VN',
+  premium: 'Đã áp dụng giao diện Premium',
 };
 
 export default function PresetSwitcher() {
@@ -91,6 +93,14 @@ export default function PresetSwitcher() {
         >
           <span>{presetLabels.trad}</span>
           {preset === 'trad' && <Check className="w-4 h-4" />}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => handlePresetChange('premium')}
+          className="flex items-center justify-between cursor-pointer"
+          data-testid="preset-option-premium"
+        >
+          <span>{presetLabels.premium}</span>
+          {preset === 'premium' && <Check className="w-4 h-4" />}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
