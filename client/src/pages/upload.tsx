@@ -15,10 +15,11 @@ import { Image, Video, Box, File as FileIcon } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
 // Client Supabase: đọc từ Vite env, fallback sang window.env nếu có
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || (window as any)?.env?.NEXT_PUBLIC_SUPABASE_URL || '',
-  import.meta.env.VITE_SUPABASE_ANON_KEY || (window as any)?.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-);
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || (window as any)?.env?.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || (window as any)?.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+const isSupabaseConfigured = supabaseUrl && supabaseKey;
+const supabase = isSupabaseConfigured ? createClient(supabaseUrl, supabaseKey) : null;
 
 type ContentType = 'image' | 'video' | 'model';
 
@@ -50,6 +51,9 @@ async function uploadViaSignedURL(file: File, bucket: string, folder?: string, p
   if (!put.ok) throw new Error('Upload thất bại');
 
   // 3) Lấy public URL để hiển thị/lưu
+  if (!supabase) {
+    throw new Error('Supabase chưa được cấu hình');
+  }
   const publicUrl = supabase.storage.from(bucket).getPublicUrl(j.path).data.publicUrl;
   return { path: j.path, url: publicUrl };
 }
@@ -62,6 +66,35 @@ export default function Upload() {
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  if (!isSupabaseConfigured) {
+    return (
+      <div className="min-h-screen bg-card py-20">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Tải Lên Nội Dung</h2>
+            <p className="text-xl text-muted-foreground">Chia sẻ mô hình 3D, hình ảnh và video mới</p>
+          </div>
+
+          <Card>
+            <CardContent className="p-8 text-center">
+              <div className="space-y-4">
+                <div className="text-6xl">⚙️</div>
+                <h3 className="text-xl font-semibold">Tính năng upload đang được cấu hình</h3>
+                <p className="text-muted-foreground">
+                  Để sử dụng tính năng tải lên file, quản trị viên cần cấu hình các biến môi trường Supabase.
+                </p>
+                <div className="text-sm text-muted-foreground bg-muted p-4 rounded">
+                  <p className="font-mono">VITE_SUPABASE_URL</p>
+                  <p className="font-mono">VITE_SUPABASE_ANON_KEY</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   const uploadMutation = useMutation({
     // DÙNG HÀM MỚI: uploadViaSignedURL
