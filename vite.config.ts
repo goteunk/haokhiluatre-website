@@ -1,35 +1,28 @@
 // vite.config.ts (đặt ở GỐC repo)
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { fileURLToPath } from 'url'
-import { dirname, resolve } from 'path'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig(() => ({
-  // Thư mục gốc của Vite là client/
-  root: resolve(__dirname, 'client'),
-
-  plugins: [react()], // Bỏ plugin Replit trong build production cho gọn/ổn định
-
+export default defineConfig({
+  // build cho thư mục client
+  root: path.resolve(__dirname, "client"),
+  plugins: [react()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'client', 'src'),
-      '@shared': resolve(__dirname, 'shared'),
-      '@assets': resolve(__dirname, 'attached_assets'),
+      "@": path.resolve(__dirname, "client", "src"),
+      "@shared": path.resolve(__dirname, "shared"),
+      "@assets": path.resolve(__dirname, "attached_assets"),
     },
   },
-
+  // QUAN TRỌNG: xuất về dist/public để Vercel lấy
   build: {
-    // Build đúng vào client/dist để Vercel lấy ra publish
-    outDir: resolve(__dirname, 'client', 'dist'),
+    outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: true,
   },
-
   server: {
-    fs: {
-      strict: true,
-      deny: ['**/.*'],
-    },
+    fs: { strict: true, deny: ["**/.*"] },
   },
-}))
+});
